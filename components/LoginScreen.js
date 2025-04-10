@@ -8,7 +8,7 @@ function LoginScreen({ onLogin }) {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post('http://192.168.1.36:5000/login', {
+      const response = await axios.post('https://18.116.19.232/login', {
         email,
         password,
       });

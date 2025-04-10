@@ -6,7 +6,7 @@ function UserList({ onEdit }) {
   const [usuarios, setUsuarios] = useState([]);
 
   const fetchUsers = async () => {
-    const res = await axios.get('http://192.168.1.36:5000/usuarios');
+    const res = await axios.get('https://18.116.19.232/usuarios');
     setUsuarios(res.data);
   };
 
@@ -15,7 +15,7 @@ function UserList({ onEdit }) {
   }, []);
 
   const deleteUser = async (id) => {
-    await axios.delete(`http://192.168.1.36:5000/usuarios/${id}`);
+    await axios.delete(`https://18.116.19.232/usuarios/${id}`);
     fetchUsers();
   };
 
