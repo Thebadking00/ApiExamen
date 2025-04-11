@@ -1,29 +1,33 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Text, Alert } from 'react-native';
-import axios from 'axios';
 
 function LoginScreen({ onLogin }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = async () => {
-    try {
-      const response = await axios.post('http://18.116.19.232/login', {
-        email,
-        password,
-      });
+  const login = async () => {
+    if (!email || !password) {
+      Alert.alert('Error', 'Por favor completa todos los campos');
+      return;
+    }
 
-      if (response.status === 200) {
-        // Login exitoso
-        Alert.alert('Éxito', response.data.message);
-        onLogin(); // Cambia el estado para mostrar los demás componentes
-      }
-    } catch (error) {
-      if (error.response && error.response.status === 401) {
-        Alert.alert('Error', 'Correo o contraseña inválidos');
+    try {
+      const response = await fetch('http://18.116.19.232/usuarios'); // Conexión al endpoint de usuarios
+      if (response.ok) {
+        const users = await response.json(); // Obtener la lista de usuarios
+        const foundUser = users.find(user => user.email === email && user.password === password);
+        
+        if (foundUser) {
+          Alert.alert('Éxito', `Bienvenido ${foundUser.name}`);
+          onLogin();
+        } else {
+          Alert.alert('Error', 'Credenciales incorrectas');
+        }
       } else {
-        Alert.alert('Error', 'Ocurrió un problema con el servidor');
+        Alert.alert('Error', 'No se pudo obtener la lista de usuarios');
       }
+    } catch (err) {
+      Alert.alert('Error', `No se pudo conectar al servidor: ${err.message}`);
     }
   };
 
@@ -43,7 +47,7 @@ function LoginScreen({ onLogin }) {
         secureTextEntry
         style={styles.input}
       />
-      <Button title="Entrar" onPress={handleSubmit} />
+      <Button title="Entrar" onPress={login} />
     </View>
   );
 }
